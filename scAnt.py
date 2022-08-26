@@ -1,3 +1,4 @@
+# PTR branch
 import datetime
 import time
 import sys
@@ -130,7 +131,6 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
         self.camera_model = None
         self.file_format = ".tif"
         self.DSLR_read_out = False
-        self.ActiveSavingProcess = False
 
         # Find FLIR cameras, if attached
         try:
@@ -148,15 +148,8 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
             # cam.device_names contains both model and serial number
             self.camera_model = self.cam.device_names[0][0]
             self.FLIR_found = True
-            self.FLIR_image_queue = []
         except IndexError:
             message = "No FLIR camera found!"
-            self.log_info(message)
-            print(message)
-            self.FLIR_found = False
-            self.disable_FLIR_inputs()
-        except ModuleNotFoundError:
-            message = "PYSPIN has not been installed - Disabling FLIR camera inputs"
             self.log_info(message)
             print(message)
             self.FLIR_found = False
@@ -338,9 +331,7 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton_saveConfig.pressed.connect(self.writeConfig)
 
         # stack and mask images
-        self.maxStackThreads = max(min([int(getThreads() / 6), 2]), 1)
-        # run no more than 3 stacking threads simultaneously but no less than 1
-        self.postScanStacking = False
+        self.maxStackThreads = int(getThreads() / 6)
         self.activeThreads = 0
         self.stackList = []
 
@@ -713,7 +704,7 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
 
     def set_project_title(self):
         name = self.ui.lineEdit_projectName.text()
-        self.setWindowTitle("scAnt V 1.2  :  " + name)
+        self.setWindowTitle("scAnt V 1.0  :  " + name)
 
     def set_output_location(self):
         new_location = QtWidgets.QFileDialog.getExistingDirectory(self, "Choose output location",
@@ -1112,11 +1103,9 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
                     self.changeInputState()
                     self.abortScan = False
 
-                    # check for images in the saving & stacking Queue
-                    print("Started background processing queue...")
-                    # prioritise writing images over stacking until the scan is either completed or aborted
-                    self.postScanStacking = False
-                    self.timerStack.start(500)
+                    if self.stackImages:
+                        # check for images in the stacking Queue
+                        self.timerStack.start(1000)
 
                     self.threadpool.start(worker)
                 else:
@@ -1126,8 +1115,6 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
         else:
             self.abortScan = True
             self.log_info("SCAN ABORTED!")
-            if self.stackImages:
-                self.postScanStacking = True
 
     def runScanAndReport_threaded(self, progress_callback):
         # number of images taken over the number of images to take
@@ -1137,7 +1124,6 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
         self.log_info("Running Scan!")
         print(self.scanner.scan_pos)
         for posX in self.scanner.scan_pos[0]:
-
             self.scanner.moveToPosition(0, posX)
             self.posX = posX
             progress_callback.emit(self.progress)
@@ -1150,9 +1136,12 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
                 stackName = []
 
                 for posZ in self.scanner.scan_pos[2]:
-                    save_time = time.time()
                     if self.abortScan:
                         return
+
+                    # stack images
+                    if self.stackImages:
+                        self.checkActiveStackThreads()
 
                     self.scanner.moveToPosition(2, posZ)
                     # to follow the naming convention when focus stacking
@@ -1163,40 +1152,36 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
                                                                             posZ) + "_" + self.file_format))
                     stackName.append(img_name)
 
-                    if self.camera_type == "FLIR":
-                        captured_image = self.cam.capture_image(img_name, return_image=True)
-                        self.FLIR_image_queue.append([captured_image, img_name])
+                    self.cam.capture_image(img_name)
                     if self.camera_type == "DSLR":
-                        self.cam.capture_image(img_name)
                         # wait for the camera to capture the image before moving further
                         time.sleep(1)
                     self.images_taken += 1
                     self.getProgress()
                     self.posZ = posZ
                     progress_callback.emit(self.progress)
-
-                    print('Time to write image to device:', time.time() - save_time, "seconds")
+                    
+                    sleeptime = 0.5
+                    print('PTR: sleeeping (scAnt.py l. 1164): ', sleeptime, ' s...')
+                    time.sleep(sleeptime)
 
                 if self.camera_type == "DSLR":
                     # TODO this is a temporary fix to ensure images are fully saved to the computer before stacking
-                    time.sleep(2)
-
+                    print('PTR: no sleeping (scAnt.py l. 1170')
+                    # time.sleep(2)
                 self.stackList.append(stackName)
 
                 self.scanner.completedStacks += 1
             self.scanner.completedRotations += 1
         # return to default position
         # reset settings
-        self.log_info("Scan completed! Homing scanner...")
-        if self.stackImages:
-            self.log_info("Stacking remaining images in queue...")
-            self.postScanStacking = True
         self.images_taken = 0
         self.deEnergise()
-        self.homeX()
-        self.homeZ()
+        print('PTR: NO homing wanted here! scAnt.py l. 1180')
+        #self.homeX()
+        #self.homeZ()
         self.resetY()
-        self.scanner.moveToPosition(1, self.ui.doubleSpinBox_yStep.value())
+        #self.scanner.moveToPosition(1, self.ui.doubleSpinBox_yStep.value())
         self.resetY()
         self.scanner.completedRotations = 0
 
@@ -1205,44 +1190,10 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
     """
 
     def checkActiveStackThreads(self):
-        # prevent multiple simultaneous saving processes
-        if not self.ActiveSavingProcess:
-            if self.camera_type == "FLIR":
-                if len(self.FLIR_image_queue) > 0:
-                    self.ActiveSavingProcess = True
-                    """
-                    first check for any queued captured images and save them to the drive
-                    create a local copy of the queue to not overwrite the external queue 
-                    and not allow further entries while processing.
-                    """
-                    temp_FLIR_image_queue = self.FLIR_image_queue.copy()
-                    for img in temp_FLIR_image_queue:
-                        # write image to drive with pre-determined name
-                        try:
-                            img[0].Save(img[1])
-                            print('Image saved as %s' % img[1])
-                            # Release image
-                        except Exception as error_save_FLIR_img:
-                            print("Failed to save:", img[1])
-                            print(error_save_FLIR_img)
-                        img[0].Release()
-                        # remove entries from queue once done
-                        self.FLIR_image_queue.remove(img)
-
-            if self.stackImages:
-                if self.activeThreads < self.maxStackThreads and len(self.stackList) > 0:
-                    worker = Worker(self.processStack)
-                    self.activeThreads += 1
-                    self.threadpool.start(worker)
-
-            self.ActiveSavingProcess = False
-
-        # additionally ensure that stacking is continued when capture finishes
-        if self.postScanStacking:
-            if self.activeThreads < self.maxStackThreads and len(self.stackList) > 0:
-                worker = Worker(self.processStack)
-                self.activeThreads += 1
-                self.threadpool.start(worker)
+        if self.activeThreads < self.maxStackThreads and len(self.stackList) > 0:
+            worker = Worker(self.processStack)
+            self.activeThreads += 1
+            self.threadpool.start(worker)
 
     def processStack(self, progress_callback):
         stack = self.stackList[0]
