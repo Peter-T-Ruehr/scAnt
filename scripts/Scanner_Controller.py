@@ -1,29 +1,34 @@
+# PTR fork
+from time import sleep
+from time import time
+import datetime
 import os
 import numpy as np
+from GUI.Live_view_FLIR import customFLIR
 from pathlib import Path
 
 """
-00281470,         Tic T500 Stepper Motor Controller -> Z-Axis (turntable)
-00281480,         Tic T500 Stepper Motor Controller -> Y-Axis (camera arm)
-00282144,         Tic T500 Stepper Motor Controller -> camera Focus
+00363443,         Tic T500 Stepper Motor Controller -> X-Axis (ring arm)
+00338490,         Tic T500 Stepper Motor Controller -> Y-Axis (specimen turntable)
+00363426,         Tic T500 Stepper Motor Controller -> Z-Axis (camera Focus) # 00374283
 """
 
 
 class ScannerController:
 
     def __init__(self):
-        self.stepperX_ID = "00281480"
-        self.stepperY_ID = "00281470"
-        self.stepperZ_ID = "00282144"
+        self.stepperX_ID = "00363443"
+        self.stepperY_ID = "00338490"
+        self.stepperZ_ID = "00374283" # "00363426"
 
         self.stepper_names = ["X", "Y", "Z"]
         self.stepper_IDs = [self.stepperX_ID, self.stepperY_ID, self.stepperZ_ID]
         self.stepper_home = ['rev', None, 'fwd']
         self.stepper_home_pos = [-1000, 0, 50000]
         self.stepper_maxAccel = [10000, 20000, 100000]
-        self.stepper_maxVelocity = [800000, 1000000, 60000000]
+        self.stepper_maxVelocity = [800000, 1000000, 40000000]
         self.stepper_stepModes = [8, 8, 8]
-        self.stepper_currents = [174, 174, 343]
+        self.stepper_currents = [990, 174, 1452] # [174, 174, 343]
 
         self.stepper_maxPos = [450, 1600, 0]
         self.stepper_minPos = [0, -1600, -45000]
@@ -32,13 +37,14 @@ class ScannerController:
         self.stepper_position = [None, None, None]
 
         # settings for scanning
-        self.scan_stepSize = [50, 80, 500]
+        self.scan_stepSize = [50, 80, 150] # 50, 80, 500
 
         self.scan_pos = [None, None, None]
         # set list of scan poses
-        self.setScanRange(stepper=0, min=0, max=450, step=self.scan_stepSize[0])
-        self.setScanRange(stepper=1, min=0, max=1600, step=self.scan_stepSize[1])
-        self.setScanRange(stepper=2, min=-25000, max=-8000, step=self.scan_stepSize[2])
+        print("PTR fork")
+        self.setScanRange(stepper=0, min=0, max=350, step=self.scan_stepSize[0]) # 0 450
+        self.setScanRange(stepper=1, min=0, max=1600, step=self.scan_stepSize[1]) # 0 1600
+        self.setScanRange(stepper=2, min=-11000, max=4500, step=self.scan_stepSize[2]) # -25000 -8000
 
         # keep track of position during scanning, skip to next full rotation of Y Axis
         self.completedRotations = 0
@@ -57,6 +63,7 @@ class ScannerController:
         self.progress = self.getProgress()
 
         self.outputFolder = ""
+        
 
     def correctName(self, val):
         """
@@ -195,23 +202,18 @@ class ScannerController:
 
                     self.cam.capture_image(img_name=img_name)
                     self.progress = self.getProgress()
-
                 self.completedStacks += 1
 
             self.completedRotations += 1
 
         # return to default position
-        print("Returning to default position")
-        scAnt.moveToPosition(stepper=0, pos=190)
-        scAnt.moveToPosition(stepper=1, pos=self.completedRotations * self.stepper_maxPos[1])
-        scAnt.moveToPosition(stepper=2, pos=-20000)
+        print("NOT Returning to default position")
+        # scAnt.moveToPosition(stepper=0, pos=190)
+        # scAnt.moveToPosition(stepper=1, pos=self.completedRotations * self.stepper_maxPos[1])
+        # scAnt.moveToPosition(stepper=2, pos=-20000)
 
 
 if __name__ == '__main__':
-    try:
-        from GUI.Live_view_FLIR import customFLIR
-    except ModuleNotFoundError:
-        print("WARNING: PySpin module not found! You can ignore this message when not using FLIR cameras.")
     print("Testing funcitonality of components")
     scAnt = ScannerController()
     scAnt.initCam(customFLIR())
