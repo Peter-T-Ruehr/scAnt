@@ -2,6 +2,7 @@ Original description below
 
 This version of scAnt does not ask for any FLIR cameras or FLIR software, and has some additional delays to accomodate for slower image data transfer from camera to computer. Runs well, as of August 30th, 2022, including image stacking.
 
+Check out some of my models made with this setup on [Sketchfab](https://sketchfab.com/Peter_TR/models)!
 
 Original description:
 # scAnt - Open Source 3D Scanner
