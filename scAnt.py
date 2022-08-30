@@ -1,4 +1,3 @@
-# PTR branch
 import datetime
 import time
 import sys
@@ -132,28 +131,29 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
         self.file_format = ".tif"
         self.DSLR_read_out = False
 
+        # PTR: commented out because no FLIR is here
         # Find FLIR cameras, if attached
-        try:
-            from GUI.Live_view_FLIR import customFLIR
-            self.FLIR = customFLIR()
-            # camera needs to be initialised before use (self.cam.initialise_camera)
-            # all detected FLIR cameras are listed in self.cam.device_names
-            # by default, use the first camera found in the list
-            self.cam = self.FLIR
-            self.cam.initialise_camera(select_cam=0)
-            # now retrieve the name of all found FLIR cameras and add them to the camera selection
-            for cam in self.cam.device_names:
-                self.ui.comboBox_selectCamera.addItem(str(cam[0] + " ID: " + cam[1]))
-            self.camera_type = "FLIR"
-            # cam.device_names contains both model and serial number
-            self.camera_model = self.cam.device_names[0][0]
-            self.FLIR_found = True
-        except IndexError:
-            message = "No FLIR camera found!"
-            self.log_info(message)
-            print(message)
-            self.FLIR_found = False
-            self.disable_FLIR_inputs()
+        #try:
+        #    from GUI.Live_view_FLIR import customFLIR
+        #    self.FLIR = customFLIR()
+        #    # camera needs to be initialised before use (self.cam.initialise_camera)
+        #    # all detected FLIR cameras are listed in self.cam.device_names
+        #    # by default, use the first camera found in the list
+        #    self.cam = self.FLIR
+        #    self.cam.initialise_camera(select_cam=0)
+        #    # now retrieve the name of all found FLIR cameras and add them to the camera selection
+        #    for cam in self.cam.device_names:
+        #        self.ui.comboBox_selectCamera.addItem(str(cam[0] + " ID: " + cam[1]))
+        #    self.camera_type = "FLIR"
+        #    # cam.device_names contains both model and serial number
+        #    self.camera_model = self.cam.device_names[0][0]
+        #    self.FLIR_found = True
+        #except IndexError:
+        message = "No FLIR camera found!"
+        self.log_info(message)
+        print(message)
+        self.FLIR_found = False
+        self.disable_FLIR_inputs()
 
         try:
             # TODO add support for the selection of multiple connected DSLR cameras
@@ -1162,12 +1162,12 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
                     progress_callback.emit(self.progress)
                     
                     sleeptime = 0.5
-                    print('PTR: sleeeping (scAnt.py l. 1164): ', sleeptime, ' s...')
+                    print('PTR: sleeeping (scAnt.py l. 1163): ', sleeptime, ' s...')
                     time.sleep(sleeptime)
 
                 if self.camera_type == "DSLR":
                     # TODO this is a temporary fix to ensure images are fully saved to the computer before stacking
-                    print('PTR: no sleeping (scAnt.py l. 1170')
+                    print('PTR: no sleeping (scAnt.py l. 1168')
                     # time.sleep(2)
                 self.stackList.append(stackName)
 
@@ -1177,7 +1177,7 @@ class scAnt_mainWindow(QtWidgets.QMainWindow):
         # reset settings
         self.images_taken = 0
         self.deEnergise()
-        print('PTR: NO homing wanted here! scAnt.py l. 1180')
+        print('PTR: NOT homing! scAnt.py l. 1175')
         #self.homeX()
         #self.homeZ()
         self.resetY()
