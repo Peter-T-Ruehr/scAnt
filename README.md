@@ -1,3 +1,9 @@
+Original description below
+
+This version of scAnt does not ask for any FLIR cameras or FLIR software, and has some additional delays to accomodate for slower image data transfer from camera to computer. Runs well, incluuding the image stacking, as of August 30th, 2022.
+
+
+Original description:
 # scAnt - Open Source 3D Scanner
 
 [**scAnt**](https://peerj.com/articles/11155/) is an open-source, low-cost macro 3D scanner, designed to automate the creation of digital 3D models of insects of various sizes in full colour. **scAnt** provides example configurations for the scanning process, as well as scripts for stacking and masking of images to prepare them for the photogrammetry software of your choice. Some examples of models generated with **scAnt** can be found on http://bit.ly/ScAnt-3D as well as on our [Sketchfab Collection](https://sketchfab.com/EvoBiomech/collections/scant-collection)!
