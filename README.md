@@ -1,8 +1,12 @@
-Original description below
+Original scAnt description below.
 
 This version of scAnt does not ask for any FLIR cameras or FLIR software, and has some additional delays to accomodate for slower image data transfer from camera to computer. Runs well, as of August 30th, 2022, including image stacking.
 
-Check out some of my models made with this setup on [Sketchfab](https://sketchfab.com/Peter_TR/models)!
+The modified software of this repo can be used with the [original scAnt setup](https://www.thingiverse.com/thing:4694713). It also runs with my modified scAnt version available [here](https://www.thingiverse.com/thing:5479056), which features camera mounts for several DSLRs.
+
+Another version of the scAnt runs with a Raspberry Pi and its HQ camera module (PiscAnt). If this is more to your liking, use the code available [here](https://github.com/Peter-T-Ruehr/PiscAnt) instead and the Pi camera mounts available [here](https://www.thingiverse.com/thing:5502528).
+
+Check out some of the models made with this code and the modified scAnt and piscAnt on [Sketchfab](https://sketchfab.com/Peter_TR/models).
 
 Original description:
 # scAnt - Open Source 3D Scanner
