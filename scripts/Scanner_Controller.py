@@ -19,7 +19,7 @@ class ScannerController:
     def __init__(self):
         self.stepperX_ID = "00363443"
         self.stepperY_ID = "00338490"
-        self.stepperZ_ID = "00374283" # "00363426"
+        self.stepperZ_ID = "00374283"
 
         self.stepper_names = ["X", "Y", "Z"]
         self.stepper_IDs = [self.stepperX_ID, self.stepperY_ID, self.stepperZ_ID]
@@ -42,7 +42,7 @@ class ScannerController:
         self.scan_pos = [None, None, None]
         # set list of scan poses
         print("PTR fork")
-        self.setScanRange(stepper=0, min=0, max=350, step=self.scan_stepSize[0]) # 0 450
+        self.setScanRange(stepper=0, min=0, max=450, step=self.scan_stepSize[0]) # 0 450
         self.setScanRange(stepper=1, min=0, max=1600, step=self.scan_stepSize[1]) # 0 1600
         self.setScanRange(stepper=2, min=-11000, max=4500, step=self.scan_stepSize[2]) # -25000 -8000
 
