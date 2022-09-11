@@ -8,6 +8,14 @@ Another version of the scAnt runs with a Raspberry Pi and its HQ camera module (
 
 Check out some of the models made with this code and the modified scAnt and piscAnt on [Sketchfab](https://sketchfab.com/Peter_TR/models).
 
+Changes made to original code:
+  * scAnt.py
+    * commented out the whole section below *Find FLIR cameras, if attached* to prevent error messages when no FLIR drivers and software is installed
+    * added a larger delay after image acqusition
+    * deactivated autmatic homing at the end of the process because I personally sometime set the home of the axes by pressing the andstops manually, especially when using large DSLR lenses
+  * Scanner_Controller.py
+    * changed z axis scan pose numbers
+
 Original description:
 # scAnt - Open Source 3D Scanner
 
