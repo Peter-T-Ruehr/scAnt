@@ -31,7 +31,7 @@ The original scAnt authors' GitHub instructions start from the header *Installat
 * install pre-configured conda environment
   * in the scAnt-master folder, open a command line window
     * run `cd conda_environment`
-    * run `conda env create -f scAnt_WINDOWS.yml`
+    * run `conda env create -f scAnt_WINDOWS.yml` - I have done this with admin rights, but am not sure if that is necessary
      * if console returns "'conda' is not recognized [...]", follow one of the suggestions below. The first solution (a) is the recommended way to solve this problem, but is prevented on some computers due to restrictive access rights. The second solution (b) works as well, but means that for every time you start the scAnt, you have to use the `C:\Miniconda3\condabin\conda.bat` command instead of just typing `conda`.
        1. type "path" in your Windows search bar to edit the system environment variables
          * in the "Advanced" tab, cick on "Environmet Variables"
@@ -39,11 +39,10 @@ The original scAnt authors' GitHub instructions start from the header *Installat
          * add the path to the conda folder here and save
        2. instead of `conda`, use `C:\Miniconda3\condabin\conda.bat`, i.e. `C:\Miniconda3\condabin\conda.bat env create -f scAnt_WINDOWS.yml` for the above command
 * restart terminal
-* run ´conda activate scAnt´
+* run ´conda activate scAnt´ - this should not result in any error message
     * remember: if you chose solution 2 from above, run `C:\Miniconda3\condabin\conda.bat activate scAnt` instead
 * download and install DigiCamControl from http://digicamcontrol.com/download
 * test scAnt and DigiCamControl installation:
-   * run `conda activate scAnt`
    * run `cd GUI`
    * run `python Live_view_DSLR.py`
 * download Pololu Tic T500 stepper motor drivers from https://www.pololu.com/product/3134/resources
