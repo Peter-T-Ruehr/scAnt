@@ -16,7 +16,48 @@ Changes made to original code:
   * Scanner_Controller.py
     * changed z axis scan pose numbers
 
-Original description:
+# Installation
+The original scAnt authors' GitHub instructions start from the header *Installation* below. I have added a nutshell version with some tips here:
+* download code from https://github.com/Peter-T-Ruehr/scAnt
+	* Code -> Download ZIP
+* unpack ZIP file
+
+* (installing latest version of Python (if not already installed) should not be necessary when you keep the box checked during miciconda installation to use miniconda as Python, but I couldn't test it because Python was already installed on my system)
+* install miniconda from https://docs.conda.io/en/latest/miniconda.html
+  * choose *Miniconda3 Windows 64-bit*
+  * during installation 
+    * check boxes to install for *All Users* and to register miniconda as system Python
+    * change destination folder to "C:\Miniconda3"
+* install pre-configured conda environment
+  * in the scAnt-master folder, open a command line window
+    * run `cd conda_environment`
+    * run `conda env create -f scAnt_WINDOWS.yml`
+     * if console returns "'conda' is not recognized [...]", follow one of the suggestions below. The first solution (a) is the recommended way to solve this problem, but is prevented on some computers due to restrictive access rights. The second solution (b) works as well, but means that for every time you start the scAnt, you have to use the `C:\Miniconda3\condabin\conda.bat` command instead of just typing `conda`.
+       1. type "path" in your Windows search bar to edit the system environment variables
+         * in the "Advanced" tab, cick on "Environmet Variables"
+         * under "System variables", select the line "PATH" or "Path" and click "Edit..."
+         * add the path to the conda folder here and save
+       2. instead of `conda`, use `C:\Miniconda3\condabin\conda.bat`, i.e. `C:\Miniconda3\condabin\conda.bat env create -f scAnt_WINDOWS.yml` for the above command
+* restart terminal
+* run ´conda activate scAnt´
+    * remember: if you chose solution 2 from above, run `C:\Miniconda3\condabin\conda.bat activate scAnt` instead
+* download and install DigiCamControl from http://digicamcontrol.com/download
+* test scAnt and DigiCamControl installation:
+   * run `conda activate scAnt`
+   * run `cd GUI`
+   * run `python Live_view_DSLR.py`
+* download Pololu Tic T500 stepper motor drivers from https://www.pololu.com/product/3134/resources
+  * choose *Tic Software and Drivers for Windows*
+  * during installation, keep the recommended settings, including the tick for adding to the PATH environment
+  * (re)plug stepper motor USB cables to PC
+* open comman line and run `ticcmd --list`
+   * a list with three stepper motor IDs should be printed to the console
+* open the *Tic Control Center* and find out which motor is which. Be careful to to let any parts of the scAnt setup run into each other - only use very few steps to move the motors until you know which one is which.
+* Open ./scripts/Scanner_Controller.py and add the IDs at the correct positions (x = Gimbal arm motor, y = specimen rotation motor, z = focus rail motor)
+
+Everything should be running now. Follow the GitHub instructions belwo the header *Quick Start Guide*
+ 
+Original scAnt description:
 # scAnt - Open Source 3D Scanner
 
 [**scAnt**](https://peerj.com/articles/11155/) is an open-source, low-cost macro 3D scanner, designed to automate the creation of digital 3D models of insects of various sizes in full colour. **scAnt** provides example configurations for the scanning process, as well as scripts for stacking and masking of images to prepare them for the photogrammetry software of your choice. Some examples of models generated with **scAnt** can be found on http://bit.ly/ScAnt-3D as well as on our [Sketchfab Collection](https://sketchfab.com/EvoBiomech/collections/scant-collection)!
