@@ -38,11 +38,11 @@ The original scAnt authors' GitHub instructions start from the header *Installat
 	    * if acces management makes this unaccessable, use the "User variables for <username> instead
         * if not already there, add the path to the conda folder (`C:\Miniconda3\condabin`) here, save and close the all windows
 
-## Pre-configured conda environment
+## Create pre-configured conda environment
 * in the scAnt-master folder, open a command line window
 * run `cd conda_environment`
 * run `conda env create -f scAnt_WINDOWS.yml` - I have done this with admin rights, but am not sure if that is necessary
-* if console returns "'conda' is not recognized [...]", make sure that the path variable is set correctly (s. above)
+* if console returns "'conda' is not recognized [...]", make sure that the path variable is set correctly (s. above). If it says it already exist, you should be able to skio this step and proceed.
 * restart terminal
 * run ´conda activate scAnt´ - this should not result in any error message
 * close the terminal
