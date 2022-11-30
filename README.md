@@ -42,16 +42,18 @@ The original scAnt authors' GitHub instructions start from the header *Installat
 * in the scAnt-master folder, open a command line window
 * run `cd conda_environment`
 * run `conda env create -f scAnt_WINDOWS.yml` - I have done this with admin rights, but am not sure if that is necessary
-* if console returns "'conda' is not recognized [...]", make sure that the path variable is set correctly (s. above). If it says it already exist, you should be able to skio this step and proceed.
+* if console returns "'conda' is not recognized [...]", make sure that the path variable is set correctly (s. above). If it says it already exist, you should be able to skio this step and proceed
 * restart terminal
-* run ´conda activate scAnt´ - this should not result in any error message
+* run `conda activate scAnt` - this should not result in any error message
 * close the terminal
 
 ## DigiCamControl
 * download and install DigiCamControl from http://digicamcontrol.com/download
 * test scAnt and DigiCamControl installation:
-   * run `cd GUI`
-   * run `python Live_view_DSLR.py`
+   * connect the camera to the PC via a USB cable and turn on the camera. You may need for to wait for Windows to install the drivers
+   * open command line in the scAnt-master folder
+   * run `cd GUI` to navigate into the folder `GUI`
+   * run `python Live_view_DSLR.py` which should open Digicamcontrol and connect to the camera
    
 ## Pololu motor drivers
 * download Pololu Tic T500 stepper motor drivers from https://www.pololu.com/product/3134/resources
