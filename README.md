@@ -44,7 +44,7 @@ The original scAnt authors' GitHub instructions start from the header *Installat
 * run `conda env create -f scAnt_WINDOWS.yml` - I have done this with admin rights, but am not sure if that is necessary
 * if console returns "'conda' is not recognized [...]", make sure that the path variable is set correctly (s. above). If it says it already exist, you should be able to skio this step and proceed
 * restart terminal
-* run `conda activate scAnt` - this should not result in any error message
+* run `conda activate scAnt` - this should start the scAnt GUI but may also produce some errors regarding motors and cameras
 * close the terminal
 
 ## DigiCamControl
